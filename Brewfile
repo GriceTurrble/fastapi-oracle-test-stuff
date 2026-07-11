@@ -1,0 +1,5 @@
+tap "homebrew/bundle"
+brew "gh"
+brew "just"
+brew "pre-commit"
+brew "uv"
