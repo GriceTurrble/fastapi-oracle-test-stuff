@@ -1,4 +1,4 @@
-from python_project_template import main
+from fastapi_oracle_test_stuff import main
 
 
 def test_it_says_hello(capsys):

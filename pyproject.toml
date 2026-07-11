@@ -1,7 +1,7 @@
 [project]
-name = "python-project-template"
+name = "fastapi-oracle-test-stuff"
 version = "0.1.0"
-description = "A template for my Python projects."
+description = "A FastAPI example app backed by a free Oracle database, used to try out the connection and libraries."
 readme = "README.md"
 authors = [
     { name = "Galen Rice", email = "griceturrble@protonmail.com" }
@@ -10,7 +10,7 @@ requires-python = ">=3.13"
 dependencies = []
 
 [project.scripts]
-project = "python_project_template:main"
+project = "fastapi_oracle_test_stuff:main"
 
 [dependency-groups]
 docs = [
@@ -23,13 +23,13 @@ dev = [
 
 
 [build-system]
-requires = ["uv_build>=0.9.0,<0.10.0"]
+requires = ["uv_build>=0.11.28,<0.12.0"]
 build-backend = "uv_build"
 
 [tool.pytest.ini_options]
 addopts = """
 --verbose
---cov=python_project_template
+--cov=fastapi_oracle_test_stuff
 --no-cov-on-fail
 --cov-branch
 --cov-report=html:pytest_cov
