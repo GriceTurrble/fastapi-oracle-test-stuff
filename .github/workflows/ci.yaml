@@ -30,7 +30,7 @@ jobs:
       pull-requests: write
     steps:
       - uses: actions/checkout@9c091bb21b7c1c1d1991bb908d89e4e9dddfe3e0 # v7.0.0
-      - uses: griceturrble/precommit-checks-action@d18ef4bd0b3de2975597dab28b9e55fcc783c9fd # v3.0.3
+      - uses: griceturrble/precommit-checks-action@e3d8c08d089c33ac5f0d32c9b1f4783296ea7411 # v3.1.0
         with:
           suggest_fixes: "true"
 
