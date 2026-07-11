@@ -176,6 +176,3 @@ common.just
 pytest_cov
 .ruff_cache
 .DS_Store
-
-# Remove the ignore on uv.lock after generating project!
-uv.lock
