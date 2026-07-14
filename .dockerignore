@@ -1,0 +1,13 @@
+.venv
+.git
+.github
+.vscode
+.pytest_cache
+.ruff_cache
+pytest_cov
+db-data
+test
+Dockerfile
+compose.yaml
+.env
+.env.sample

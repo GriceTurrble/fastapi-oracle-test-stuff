@@ -1,0 +1,33 @@
+services:
+  app:
+    build: .
+    container_name: fastapi-oracle-test-stuff-app
+    ports:
+      - "8000:8000"
+    environment:
+      TESTTHING__DB__USER: ${TESTTHING__DB__USER}
+      TESTTHING__DB__PASSWORD: ${TESTTHING__DB__PASSWORD}
+      TESTTHING__DB__HOST: oracle-db
+      TESTTHING__DB__SERVICE: ${TESTTHING__DB__SERVICE}
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+
+  oracle-db:
+    image: gvenzl/oracle-free:latest
+    container_name: fastapi-oracle-test-stuff-db
+    ports:
+      - "1521:1521"
+    environment:
+      ORACLE_PASSWORD: ${TESTTHING__DB__PASSWORD}
+      ORACLE_DATABASE: ${TESTTHING__DB__SERVICE}
+      APP_USER: ${TESTTHING__DB__USER}
+      APP_USER_PASSWORD: ${TESTTHING__DB__PASSWORD}
+    volumes:
+      - ./db-data:/opt/oracle/oradata
+    healthcheck:
+      test: ["CMD", "healthcheck.sh"]
+      interval: 10s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
