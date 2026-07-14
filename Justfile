@@ -1,3 +1,5 @@
+set dotenv-load
+
 ### START COMMON ###
 import? 'common.just'
 
@@ -26,3 +28,13 @@ sync:
 # Serve docs/ as a mkdocs site locally with hot-reloading
 docs:
     uv run mkdocs serve
+
+# Start services
+up:
+    docker compose up
+
+# Seed the local Oracle DB with dummy data
+db-seed:
+    docker compose exec -T oracle-db sqlplus -s \
+        "$TESTTHING__DB__USER/$TESTTHING__DB__PASSWORD@//localhost:1521/$TESTTHING__DB__SERVICE" \
+        < sql/seed.sql

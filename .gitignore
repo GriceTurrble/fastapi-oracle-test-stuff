@@ -176,3 +176,6 @@ common.just
 pytest_cov
 .ruff_cache
 .DS_Store
+
+# Oracle DB data volume (docker compose)
+/db-data/
