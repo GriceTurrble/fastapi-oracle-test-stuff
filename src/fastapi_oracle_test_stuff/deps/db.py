@@ -41,9 +41,8 @@ def get_session_maker(settings: SettingsDep) -> async_sessionmaker[AsyncSession]
     return _build_session_maker(settings)
 
 
-SessionMakerDep = Annotated[
-    async_sessionmaker[AsyncSession], Depends(get_session_maker)
-]
+SessionMakerType = async_sessionmaker[AsyncSession]
+SessionMakerDep = Annotated[SessionMakerType, Depends(get_session_maker)]
 """Inject to get the shared `async_sessionmaker`, then open a session where
 the transaction boundary actually belongs (typically in the route or service
 function), e.g.:

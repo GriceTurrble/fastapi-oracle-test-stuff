@@ -34,6 +34,7 @@ def get_settings() -> Settings:
     return Settings()
 
 
+SettingsType = Settings
 SettingsDep = Annotated[Settings, Depends(get_settings)]
 """Inject to get the cached `Settings` instance, e.g.:
 
