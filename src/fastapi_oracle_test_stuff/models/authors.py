@@ -21,3 +21,13 @@ class AuthorRead(BaseModel):
     id: int
     name: str
     country: str | None
+
+
+class AuthorCreate(BaseModel):
+    name: str
+    country: str | None = None
+
+
+class AuthorUpdate(BaseModel):
+    name: str | None = None
+    country: str | None = None
