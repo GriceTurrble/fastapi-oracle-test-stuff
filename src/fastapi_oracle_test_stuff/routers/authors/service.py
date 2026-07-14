@@ -4,6 +4,7 @@ from typing import TYPE_CHECKING, Annotated
 
 from fastapi import Depends
 from sqlalchemy import select
+from sqlalchemy.orm import selectinload
 
 from fastapi_oracle_test_stuff import models
 from fastapi_oracle_test_stuff.deps import db, settings
@@ -23,11 +24,17 @@ class AuthorService:
 
     @staticmethod
     async def _get(session: AsyncSession, id: int) -> models.Author | None:
-        return await session.get(models.Author, id)
+        return await session.get(
+            models.Author,
+            id,
+            options=[selectinload(models.Author.books)],
+        )
 
     async def get_authors(self) -> list[models.Author]:
         async with self.session_maker() as session:
-            result = await session.execute(select(models.Author))
+            result = await session.execute(
+                select(models.Author).options(selectinload(models.Author.books))
+            )
             return list(result.scalars())
 
     async def get_author(self, id: int) -> models.Author | None:
@@ -40,7 +47,7 @@ class AuthorService:
             author = models.Author(name=data.name, country=data.country)
             session.add(author)
             await session.commit()
-            await session.refresh(author)
+            await session.refresh(author, attribute_names=["books"])
         return author
 
     async def update_author(
@@ -55,7 +62,7 @@ class AuthorService:
                 setattr(author, field, value)
 
             await session.commit()
-            await session.refresh(author)
+            await session.refresh(author, attribute_names=["books"])
         return author
 
     async def delete_author(self, id: int) -> bool:
