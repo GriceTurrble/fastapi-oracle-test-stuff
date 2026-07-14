@@ -23,7 +23,7 @@ class Book(Base):
     author: Mapped[Author] = relationship(back_populates="books")
 
 
-class AuthorSummary(BaseModel):
+class BookAuthorSummary(BaseModel):
     """An Author, as embedded in a BookRead's `author` field."""
 
     id: int
@@ -36,7 +36,7 @@ class BookRead(BaseModel):
     id: int
     title: str
     published_year: int | None
-    author: AuthorSummary
+    author: BookAuthorSummary
 
 
 class BookCreate(BaseModel):

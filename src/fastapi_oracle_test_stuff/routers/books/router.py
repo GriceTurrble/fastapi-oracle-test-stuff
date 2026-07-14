@@ -17,12 +17,15 @@ def _book_not_found(id: int) -> HTTPException:
     )
 
 
-def _to_book_response(book: models.Book, request: Request) -> models.BookRead:
+def to_book_response(
+    book: models.Book,
+    request: Request,
+) -> models.BookRead:
     return models.BookRead(
         id=book.id,
         title=book.title,
         published_year=book.published_year,
-        author=models.AuthorSummary(
+        author=models.BookAuthorSummary(
             id=book.author.id,
             name=book.author.name,
             country=book.author.country,
@@ -31,32 +34,52 @@ def _to_book_response(book: models.Book, request: Request) -> models.BookRead:
     )
 
 
-@router.get("/", response_model=list[models.BookRead])
-async def list_books(request: Request, service: book_service.BookServiceDep):
+@router.get(
+    "/",
+    response_model=list[models.BookRead],
+)
+async def list_books(
+    request: Request,
+    service: book_service.BookServiceDep,
+):
     books = await service.get_books()
-    return [_to_book_response(book, request) for book in books]
+    return [to_book_response(book, request) for book in books]
 
 
-@router.get("/{id}", response_model=models.BookRead)
-async def get_book(id: int, request: Request, service: book_service.BookServiceDep):
+@router.get(
+    "/{id}",
+    response_model=models.BookRead,
+)
+async def get_book(
+    id: int,
+    request: Request,
+    service: book_service.BookServiceDep,
+):
     book = await service.get_book(id=id)
     if book is None:
         raise _book_not_found(id)
 
-    return _to_book_response(book, request)
+    return to_book_response(book, request)
 
 
-@router.post("/", response_model=models.BookRead, status_code=status.HTTP_201_CREATED)
+@router.post(
+    "/",
+    response_model=models.BookRead,
+    status_code=status.HTTP_201_CREATED,
+)
 async def create_book(
     data: models.BookCreate,
     request: Request,
     service: book_service.BookServiceDep,
 ):
     book = await service.create_book(data)
-    return _to_book_response(book, request)
+    return to_book_response(book, request)
 
 
-@router.patch("/{id}", response_model=models.BookRead)
+@router.patch(
+    "/{id}",
+    response_model=models.BookRead,
+)
 async def update_book(
     id: int,
     data: models.BookUpdate,
@@ -67,11 +90,17 @@ async def update_book(
     if book is None:
         raise _book_not_found(id)
 
-    return _to_book_response(book, request)
+    return to_book_response(book, request)
 
 
-@router.delete("/{id}", status_code=status.HTTP_204_NO_CONTENT)
-async def delete_book(id: int, service: book_service.BookServiceDep):
+@router.delete(
+    "/{id}",
+    status_code=status.HTTP_204_NO_CONTENT,
+)
+async def delete_book(
+    id: int,
+    service: book_service.BookServiceDep,
+):
     deleted = await service.delete_book(id=id)
     if not deleted:
         raise _book_not_found(id)

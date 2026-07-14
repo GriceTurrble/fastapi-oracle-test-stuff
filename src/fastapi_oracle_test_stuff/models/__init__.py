@@ -1,17 +1,17 @@
 from __future__ import annotations
 
-from .authors import Author, AuthorCreate, AuthorRead, AuthorUpdate, BookSummary
-from .books import AuthorSummary, Book, BookCreate, BookRead, BookUpdate
+from .authors import Author, AuthorBookSummary, AuthorCreate, AuthorRead, AuthorUpdate
+from .books import Book, BookAuthorSummary, BookCreate, BookRead, BookUpdate
 
 __all__ = [
     "Author",
+    "AuthorBookSummary",
     "AuthorCreate",
     "AuthorRead",
-    "AuthorSummary",
     "AuthorUpdate",
     "Book",
+    "BookAuthorSummary",
     "BookCreate",
     "BookRead",
-    "BookSummary",
     "BookUpdate",
 ]

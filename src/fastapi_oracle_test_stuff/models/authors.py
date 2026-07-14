@@ -22,7 +22,7 @@ class Author(Base):
     books: Mapped[list[Book]] = relationship(back_populates="author")
 
 
-class BookSummary(BaseModel):
+class AuthorBookSummary(BaseModel):
     """A Book, as embedded in an AuthorRead's `books` list."""
 
     id: int
@@ -35,7 +35,7 @@ class AuthorRead(BaseModel):
     id: int
     name: str
     country: str | None
-    books: list[BookSummary]
+    books: list[AuthorBookSummary]
 
 
 class AuthorCreate(BaseModel):

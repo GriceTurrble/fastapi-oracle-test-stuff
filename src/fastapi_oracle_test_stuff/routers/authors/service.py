@@ -23,17 +23,24 @@ class AuthorService:
         self.session_maker = session_maker
 
     @staticmethod
-    async def _get(session: AsyncSession, id: int) -> models.Author | None:
+    async def _get(
+        session: AsyncSession,
+        id: int,
+    ) -> models.Author | None:
         return await session.get(
             models.Author,
             id,
-            options=[selectinload(models.Author.books)],
+            options=[
+                selectinload(models.Author.books).selectinload(models.Book.author)
+            ],
         )
 
     async def get_authors(self) -> list[models.Author]:
         async with self.session_maker() as session:
             result = await session.execute(
-                select(models.Author).options(selectinload(models.Author.books))
+                select(models.Author).options(
+                    selectinload(models.Author.books).selectinload(models.Book.author)
+                )
             )
             return list(result.scalars())
 
@@ -51,7 +58,9 @@ class AuthorService:
         return author
 
     async def update_author(
-        self, id: int, data: models.AuthorUpdate
+        self,
+        id: int,
+        data: models.AuthorUpdate,
     ) -> models.Author | None:
         async with self.session_maker() as session:
             author = await self._get(session, id)
@@ -82,7 +91,10 @@ class AuthorServiceInjectable(AuthorService):
         app_settings: settings.SettingsDep,
         session_maker: db.SessionMakerDep,
     ):
-        super().__init__(app_settings=app_settings, session_maker=session_maker)
+        super().__init__(
+            app_settings=app_settings,
+            session_maker=session_maker,
+        )
 
 
 AuthorServiceDep = Annotated[AuthorService, Depends(AuthorServiceInjectable)]
