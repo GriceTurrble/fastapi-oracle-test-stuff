@@ -23,7 +23,10 @@ class BookService:
         self.session_maker = session_maker
 
     @staticmethod
-    async def _get(session: AsyncSession, id: int) -> models.Book | None:
+    async def _get(
+        session: AsyncSession,
+        id: int,
+    ) -> models.Book | None:
         return await session.get(
             models.Book, id, options=[selectinload(models.Book.author)]
         )
@@ -52,7 +55,11 @@ class BookService:
             await session.refresh(book, attribute_names=["author"])
         return book
 
-    async def update_book(self, id: int, data: models.BookUpdate) -> models.Book | None:
+    async def update_book(
+        self,
+        id: int,
+        data: models.BookUpdate,
+    ) -> models.Book | None:
         async with self.session_maker() as session:
             book = await self._get(session, id)
             if book is None:
@@ -82,7 +89,10 @@ class BookServiceInjectable(BookService):
         app_settings: settings.SettingsDep,
         session_maker: db.SessionMakerDep,
     ):
-        super().__init__(app_settings=app_settings, session_maker=session_maker)
+        super().__init__(
+            app_settings=app_settings,
+            session_maker=session_maker,
+        )
 
 
 BookServiceDep = Annotated[BookService, Depends(BookServiceInjectable)]
