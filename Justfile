@@ -3,6 +3,8 @@ set dotenv-load
 ### START COMMON ###
 import? 'common.just'
 
+FASTAPI_APP_PATH := "fastapi_oracle_test_stuff.main:create_app"
+
 # Show these help docs
 help:
     @just --list --unsorted --justfile {{ source_file() }}
@@ -29,7 +31,7 @@ sync:
 docs:
     uv run mkdocs serve
 
-# Start services
+# Start docker compose services
 up:
     docker compose up
 
@@ -38,3 +40,11 @@ db-seed:
     docker compose exec -T oracle-db sqlplus -s \
         "$TESTTHING__DB__USER/$TESTTHING__DB__PASSWORD@//localhost:1521/$TESTTHING__DB__SERVICE" \
         < sql/seed.sql
+
+# Run API in granian in local shell, outside docker compose
+run-local:
+    uv run granian \
+        --interface asgi \
+        --reload \
+        --factory \
+        {{FASTAPI_APP_PATH}}

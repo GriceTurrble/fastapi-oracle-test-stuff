@@ -1,4 +1,18 @@
 services:
+  app:
+    build: .
+    container_name: fastapi-oracle-test-stuff-app
+    ports:
+      - "8000:8000"
+    environment:
+      TESTTHING__DB__USER: ${TESTTHING__DB__USER}
+      TESTTHING__DB__PASSWORD: ${TESTTHING__DB__PASSWORD}
+      TESTTHING__DB__HOST: oracle-db
+      TESTTHING__DB__SERVICE: ${TESTTHING__DB__SERVICE}
+    depends_on:
+      oracle-db:
+        condition: service_healthy
+
   oracle-db:
     image: gvenzl/oracle-free:latest
     container_name: fastapi-oracle-test-stuff-db
