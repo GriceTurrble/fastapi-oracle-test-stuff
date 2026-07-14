@@ -48,3 +48,10 @@ run-local:
         --reload \
         --factory \
         {{FASTAPI_APP_PATH}}
+
+# Reload the running docker compose app for the FastAPI service, without stopping the DB
+reload-docker-compose-app:
+    docker compose build app
+    docker compose up -d app
+
+alias rdca := reload-docker-compose-app
