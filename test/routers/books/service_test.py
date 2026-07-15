@@ -128,7 +128,7 @@ class TestBookServiceInjectable:
         `Depends()` actually calls in production, but router tests override
         it entirely (see `test/routers/books/conftest.py`) and the tests
         above construct the base `BookService` directly. Calling it here is
-        a plain Python call -- the `SessionMakerDep` annotation on its
+        a plain Python call -- the `AsyncSessionMakerDep` annotation on its
         `session_maker` parameter only matters when FastAPI parses the
         signature, so this doesn't touch settings or a real DB session.
         """

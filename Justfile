@@ -33,7 +33,11 @@ test:
 
 # Start docker compose services
 up:
-    docker compose up
+    docker compose up -d
+
+# Stop docker compose services
+down:
+    docker compose down
 
 # Seed the local Oracle DB with dummy data
 db-seed:
@@ -54,4 +58,4 @@ reload-docker-compose-app:
     docker compose build app
     docker compose up -d app
 
-alias rdca := reload-docker-compose-app
+alias reload-app := reload-docker-compose-app

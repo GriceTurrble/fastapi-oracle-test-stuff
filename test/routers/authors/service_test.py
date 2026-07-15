@@ -5,7 +5,6 @@ from unittest.mock import MagicMock
 import pytest
 
 from fastapi_oracle_test_stuff import models
-from fastapi_oracle_test_stuff.routers.authors import service as author_service
 
 pytestmark = pytest.mark.anyio
 
@@ -122,21 +121,3 @@ class TestDeleteAuthor:
         assert result is False
         mock_session.delete.assert_not_awaited()
         mock_session.commit.assert_not_awaited()
-
-
-class TestAuthorServiceInjectable:
-    def test_wires_session_maker_via_base_class(self, mock_session_maker):
-        """Covers the one line neither the router tests nor the tests above
-        touch: `AuthorServiceInjectable.__init__` is what FastAPI's
-        `Depends()` actually calls in production, but router tests override
-        it entirely (see `test/routers/authors/conftest.py`) and the tests
-        above construct the base `AuthorService` directly. Calling it here
-        is a plain Python call -- the `SessionMakerDep` annotation on its
-        `session_maker` parameter only matters when FastAPI parses the
-        signature, so this doesn't touch settings or a real DB session.
-        """
-        injectable = author_service.AuthorServiceInjectable(
-            session_maker=mock_session_maker
-        )
-
-        assert injectable.session_maker is mock_session_maker

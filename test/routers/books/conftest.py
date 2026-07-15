@@ -27,7 +27,7 @@ def client(app, mock_book_service):
     """A `TestClient` with `BookServiceInjectable` overridden to the mock.
 
     `BookServiceInjectable` is the callable actually passed to `Depends()`,
-    so overriding it bypasses `SettingsDep`/`SessionMakerDep` entirely -- no
+    so overriding it bypasses `SettingsDep`/`AsyncSessionMakerDep` entirely -- no
     settings or DB session is ever constructed for these tests.
     """
     app.dependency_overrides[book_service.BookServiceInjectable] = lambda: (
