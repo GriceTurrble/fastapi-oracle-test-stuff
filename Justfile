@@ -27,9 +27,9 @@ bootstrap:
 sync:
     uv sync --all-groups
 
-# Serve docs/ as a mkdocs site locally with hot-reloading
-docs:
-    uv run mkdocs serve
+# Run tests
+test:
+    uv run pytest
 
 # Start docker compose services
 up:
