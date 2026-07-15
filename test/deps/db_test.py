@@ -7,7 +7,7 @@ from fastapi_oracle_test_stuff.deps import db
 
 class TestBuildSessionMaker:
     def test_returns_an_async_sessionmaker(self, settings_factory):
-        session_maker = db._build_session_maker(settings_factory())
+        session_maker = db._build_async_session_maker(settings_factory())
 
         assert isinstance(session_maker, async_sessionmaker)
 
@@ -20,7 +20,7 @@ class TestBuildSessionMaker:
             service="orclpdb",
         )
 
-        session_maker = db._build_session_maker(settings)
+        session_maker = db._build_async_session_maker(settings)
 
         url = session_maker.kw["bind"].url
         assert url.drivername == "oracle+oracledb"
@@ -31,15 +31,15 @@ class TestBuildSessionMaker:
         assert url.query["service_name"] == "orclpdb"
 
     def test_disables_expire_on_commit(self, settings_factory):
-        session_maker = db._build_session_maker(settings_factory())
+        session_maker = db._build_async_session_maker(settings_factory())
 
         assert session_maker.kw["expire_on_commit"] is False
 
     def test_caches_the_session_maker_across_calls(self, settings_factory):
         settings = settings_factory()
 
-        first = db._build_session_maker(settings)
-        second = db._build_session_maker(settings)
+        first = db._build_async_session_maker(settings)
+        second = db._build_async_session_maker(settings)
 
         assert first is second
 
@@ -53,8 +53,8 @@ class TestBuildSessionMaker:
         first_settings = settings_factory(host="first-host")
         second_settings = settings_factory(host="second-host")
 
-        first = db._build_session_maker(first_settings)
-        second = db._build_session_maker(second_settings)
+        first = db._build_async_session_maker(first_settings)
+        second = db._build_async_session_maker(second_settings)
 
         assert first is second
         assert second.kw["bind"].url.host == "first-host"
@@ -64,7 +64,7 @@ class TestGetSessionMaker:
     def test_returns_same_session_maker_as_build_session_maker(self, settings_factory):
         settings = settings_factory()
 
-        via_get = db.get_session_maker(settings)
-        via_build = db._build_session_maker(settings)
+        via_get = db.get_async_session_maker(settings)
+        via_build = db._build_async_session_maker(settings)
 
         assert via_get is via_build

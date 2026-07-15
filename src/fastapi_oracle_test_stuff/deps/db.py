@@ -14,13 +14,13 @@ from sqlalchemy.ext.asyncio import (
 
 from fastapi_oracle_test_stuff.deps.settings import Settings, SettingsDep
 
-type SessionMakerType = async_sessionmaker[AsyncSession]
+type AsyncSessionMakerType = async_sessionmaker[AsyncSession]
 
-_session_maker_cache: dict[str, SessionMakerType] = {}
+_async_session_maker_cache: dict[str, AsyncSessionMakerType] = {}
 
 
-def _build_session_maker(settings: Settings) -> SessionMakerType:
-    if "default" not in _session_maker_cache:
+def _build_async_session_maker(settings: Settings) -> AsyncSessionMakerType:
+    if "default" not in _async_session_maker_cache:
         db_settings = settings.db
         url = URL.create(
             drivername="oracle+oracledb",
@@ -30,26 +30,29 @@ def _build_session_maker(settings: Settings) -> SessionMakerType:
             port=db_settings.port,
             query={"service_name": db_settings.service},
         )
-        engine = create_async_engine(url)
-        _session_maker_cache["default"] = async_sessionmaker(
-            bind=engine,
+        async_engine = create_async_engine(url)
+        _async_session_maker_cache["default"] = async_sessionmaker(
+            bind=async_engine,
             expire_on_commit=False,
         )
 
-    return _session_maker_cache["default"]
+    return _async_session_maker_cache["default"]
 
 
-def get_session_maker(settings: SettingsDep) -> SessionMakerType:
-    return _build_session_maker(settings=settings)
+def get_async_session_maker(settings: SettingsDep) -> AsyncSessionMakerType:
+    return _build_async_session_maker(settings=settings)
 
 
-SessionMakerDep = Annotated[SessionMakerType, Depends(get_session_maker)]
+AsyncSessionMakerDep = Annotated[
+    AsyncSessionMakerType,
+    Depends(get_async_session_maker),
+]
 """Inject to get the shared `async_sessionmaker`, then open a session where
 the transaction boundary actually belongs (typically in the route or service
 function), e.g.:
 
-    async def list_authors(session_maker: SessionMakerDep):
-        async with session_maker() as session:
+    async def list_authors(async_sessionmaker: AsyncSessionMakerDep):
+        async with async_sessionmaker() as session:
             ...
 
 This dependency intentionally yields the sessionmaker itself rather than an

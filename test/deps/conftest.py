@@ -16,9 +16,9 @@ def _reset_session_maker_cache():
     without resetting it, whichever test runs first would "win" and every
     later test would see its cached `async_sessionmaker` instead of its own.
     """
-    db._session_maker_cache.clear()
+    db._async_session_maker_cache.clear()
     yield
-    db._session_maker_cache.clear()
+    db._async_session_maker_cache.clear()
 
 
 @pytest.fixture

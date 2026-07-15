@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class BookService:
-    def __init__(self, session_maker: db.SessionMakerType):
+    def __init__(self, session_maker: db.AsyncSessionMakerType):
         self.session_maker = session_maker
 
     @staticmethod
@@ -79,7 +79,7 @@ class BookService:
 
 
 class BookServiceInjectable(BookService):
-    def __init__(self, session_maker: db.SessionMakerDep):
+    def __init__(self, session_maker: db.AsyncSessionMakerDep):
         super().__init__(session_maker=session_maker)
 
 

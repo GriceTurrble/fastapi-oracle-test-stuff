@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class AuthorService:
-    def __init__(self, session_maker: db.SessionMakerDep):
+    def __init__(self, session_maker: db.AsyncSessionMakerDep):
         self.session_maker = session_maker
 
     @staticmethod

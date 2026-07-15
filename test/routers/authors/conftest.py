@@ -27,7 +27,7 @@ def client(app, mock_author_service):
     """A `TestClient` with `AuthorService` overridden to the mock.
 
     `AuthorService` is the callable actually passed to `Depends()`,
-    so overriding it bypasses `SettingsDep`/`SessionMakerDep` entirely -- no
+    so overriding it bypasses `SettingsDep`/`AsyncSessionMakerDep` entirely -- no
     settings or DB session is ever constructed for these tests.
     """
     app.dependency_overrides[author_service.AuthorService] = lambda: mock_author_service
