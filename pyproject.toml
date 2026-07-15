@@ -10,7 +10,7 @@ requires-python = ">=3.13"
 dependencies = [
     "fastapi>=0.139.0",
     "granian[dotenv]>=2.7.9",
-    "httpx>=0.28.1",
+    "httpx2>=2.7.0",
     "oracledb>=4.0.2",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.2",
@@ -40,6 +40,7 @@ addopts = """
 --cov=fastapi_oracle_test_stuff
 --no-cov-on-fail
 --cov-branch
+--cov-report=term-missing
 --cov-report=html:pytest_cov
 """
 

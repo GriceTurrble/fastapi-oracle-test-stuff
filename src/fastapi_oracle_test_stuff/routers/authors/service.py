@@ -7,19 +7,14 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from fastapi_oracle_test_stuff import models
-from fastapi_oracle_test_stuff.deps import db, settings
+from fastapi_oracle_test_stuff.deps import db
 
 if TYPE_CHECKING:
     from sqlalchemy.ext.asyncio import AsyncSession
 
 
 class AuthorService:
-    def __init__(
-        self,
-        app_settings: settings.SettingsType,
-        session_maker: db.SessionMakerType,
-    ):
-        self.settings = app_settings
+    def __init__(self, session_maker: db.SessionMakerType):
         self.session_maker = session_maker
 
     @staticmethod
@@ -86,15 +81,8 @@ class AuthorService:
 
 
 class AuthorServiceInjectable(AuthorService):
-    def __init__(
-        self,
-        app_settings: settings.SettingsDep,
-        session_maker: db.SessionMakerDep,
-    ):
-        super().__init__(
-            app_settings=app_settings,
-            session_maker=session_maker,
-        )
+    def __init__(self, session_maker: db.SessionMakerDep):
+        super().__init__(session_maker=session_maker)
 
 
 AuthorServiceDep = Annotated[AuthorService, Depends(AuthorServiceInjectable)]
