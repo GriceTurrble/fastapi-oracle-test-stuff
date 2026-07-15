@@ -34,3 +34,15 @@ def client(app, mock_author_service):
         mock_author_service
     )
     return TestClient(app)
+
+
+@pytest.fixture
+def service(mock_session_maker):
+    """The real `AuthorService`, wired to `mock_session_maker`.
+
+    Unlike `mock_author_service` above (which stands in for the whole
+    service when testing the router), this is the actual implementation
+    under test -- isolated only from the database itself, via
+    `mock_session`/`mock_session_maker` (see the top-level conftest).
+    """
+    return author_service.AuthorService(session_maker=mock_session_maker)
