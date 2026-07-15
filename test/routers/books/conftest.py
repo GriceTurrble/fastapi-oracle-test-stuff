@@ -30,9 +30,7 @@ def client(app, mock_book_service):
     so overriding it bypasses `SettingsDep`/`AsyncSessionMakerDep` entirely -- no
     settings or DB session is ever constructed for these tests.
     """
-    app.dependency_overrides[book_service.BookServiceInjectable] = lambda: (
-        mock_book_service
-    )
+    app.dependency_overrides[book_service.BookService] = lambda: mock_book_service
     return TestClient(app)
 
 
@@ -45,4 +43,4 @@ def service(mock_session_maker):
     -- isolated only from the database itself, via
     `mock_session`/`mock_session_maker` (see the top-level conftest).
     """
-    return book_service.BookService(session_maker=mock_session_maker)
+    return book_service.BookService(async_session_maker=mock_session_maker)

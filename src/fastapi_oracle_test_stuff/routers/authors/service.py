@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 
 class AuthorService:
-    def __init__(self, session_maker: db.AsyncSessionMakerDep):
-        self.session_maker = session_maker
+    def __init__(self, async_session_maker: db.AsyncSessionMakerDep):
+        self.async_session_maker = async_session_maker
 
     @staticmethod
     async def _get(
@@ -31,7 +31,7 @@ class AuthorService:
         )
 
     async def get_authors(self) -> list[models.Author]:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             result = await session.execute(
                 select(models.Author).options(
                     selectinload(models.Author.books).selectinload(models.Book.author)
@@ -40,12 +40,12 @@ class AuthorService:
             return list(result.scalars())
 
     async def get_author(self, id: int) -> models.Author | None:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             author = await self._get(session, id)
         return author
 
     async def create_author(self, data: models.AuthorCreate) -> models.Author:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             author = models.Author(name=data.name, country=data.country)
             session.add(author)
             await session.commit()
@@ -57,7 +57,7 @@ class AuthorService:
         id: int,
         data: models.AuthorUpdate,
     ) -> models.Author | None:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             author = await self._get(session, id)
             if author is None:
                 return None
@@ -70,7 +70,7 @@ class AuthorService:
         return author
 
     async def delete_author(self, id: int) -> bool:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             author = await self._get(session, id)
             if author is None:
                 return False

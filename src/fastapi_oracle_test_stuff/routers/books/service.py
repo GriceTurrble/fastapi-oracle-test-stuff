@@ -14,8 +14,8 @@ if TYPE_CHECKING:
 
 
 class BookService:
-    def __init__(self, session_maker: db.AsyncSessionMakerType):
-        self.session_maker = session_maker
+    def __init__(self, async_session_maker: db.AsyncSessionMakerDep):
+        self.async_session_maker = async_session_maker
 
     @staticmethod
     async def _get(
@@ -27,19 +27,19 @@ class BookService:
         )
 
     async def get_books(self) -> list[models.Book]:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             result = await session.execute(
                 select(models.Book).options(selectinload(models.Book.author))
             )
             return list(result.scalars())
 
     async def get_book(self, id: int) -> models.Book | None:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             book = await self._get(session, id)
         return book
 
     async def create_book(self, data: models.BookCreate) -> models.Book:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             book = models.Book(
                 title=data.title,
                 author_id=data.author_id,
@@ -55,7 +55,7 @@ class BookService:
         id: int,
         data: models.BookUpdate,
     ) -> models.Book | None:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             book = await self._get(session, id)
             if book is None:
                 return None
@@ -68,7 +68,7 @@ class BookService:
         return book
 
     async def delete_book(self, id: int) -> bool:
-        async with self.session_maker() as session:
+        async with self.async_session_maker() as session:
             book = await self._get(session, id)
             if book is None:
                 return False
@@ -78,9 +78,4 @@ class BookService:
         return True
 
 
-class BookServiceInjectable(BookService):
-    def __init__(self, session_maker: db.AsyncSessionMakerDep):
-        super().__init__(session_maker=session_maker)
-
-
-BookServiceDep = Annotated[BookService, Depends(BookServiceInjectable)]
+BookServiceDep = Annotated[BookService, Depends(BookService)]

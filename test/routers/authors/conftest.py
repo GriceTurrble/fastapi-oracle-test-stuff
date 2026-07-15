@@ -43,4 +43,4 @@ def service(mock_session_maker):
     under test -- isolated only from the database itself, via
     `mock_session`/`mock_session_maker` (see the top-level conftest).
     """
-    return author_service.AuthorService(session_maker=mock_session_maker)
+    return author_service.AuthorService(async_session_maker=mock_session_maker)
