@@ -24,15 +24,13 @@ def mock_author_service():
 
 @pytest.fixture
 def client(app, mock_author_service):
-    """A `TestClient` with `AuthorServiceInjectable` overridden to the mock.
+    """A `TestClient` with `AuthorService` overridden to the mock.
 
-    `AuthorServiceInjectable` is the callable actually passed to `Depends()`,
+    `AuthorService` is the callable actually passed to `Depends()`,
     so overriding it bypasses `SettingsDep`/`SessionMakerDep` entirely -- no
     settings or DB session is ever constructed for these tests.
     """
-    app.dependency_overrides[author_service.AuthorServiceInjectable] = lambda: (
-        mock_author_service
-    )
+    app.dependency_overrides[author_service.AuthorService] = lambda: mock_author_service
     return TestClient(app)
 
 

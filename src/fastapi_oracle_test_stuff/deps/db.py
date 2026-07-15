@@ -14,14 +14,16 @@ from sqlalchemy.ext.asyncio import (
 
 from fastapi_oracle_test_stuff.deps.settings import Settings, SettingsDep
 
-_session_maker_cache: dict[str, async_sessionmaker[AsyncSession]] = {}
+type SessionMakerType = async_sessionmaker[AsyncSession]
+
+_session_maker_cache: dict[str, SessionMakerType] = {}
 
 
-def _build_session_maker(settings: Settings) -> async_sessionmaker[AsyncSession]:
+def _build_session_maker(settings: Settings) -> SessionMakerType:
     if "default" not in _session_maker_cache:
         db_settings = settings.db
         url = URL.create(
-            "oracle+oracledb",
+            drivername="oracle+oracledb",
             username=db_settings.user,
             password=db_settings.password.get_secret_value(),
             host=db_settings.host,
@@ -30,18 +32,17 @@ def _build_session_maker(settings: Settings) -> async_sessionmaker[AsyncSession]
         )
         engine = create_async_engine(url)
         _session_maker_cache["default"] = async_sessionmaker(
-            engine,
+            bind=engine,
             expire_on_commit=False,
         )
 
     return _session_maker_cache["default"]
 
 
-def get_session_maker(settings: SettingsDep) -> async_sessionmaker[AsyncSession]:
-    return _build_session_maker(settings)
+def get_session_maker(settings: SettingsDep) -> SessionMakerType:
+    return _build_session_maker(settings=settings)
 
 
-SessionMakerType = async_sessionmaker[AsyncSession]
 SessionMakerDep = Annotated[SessionMakerType, Depends(get_session_maker)]
 """Inject to get the shared `async_sessionmaker`, then open a session where
 the transaction boundary actually belongs (typically in the route or service

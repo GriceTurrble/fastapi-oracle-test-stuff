@@ -14,7 +14,7 @@ if TYPE_CHECKING:
 
 
 class AuthorService:
-    def __init__(self, session_maker: db.SessionMakerType):
+    def __init__(self, session_maker: db.SessionMakerDep):
         self.session_maker = session_maker
 
     @staticmethod
@@ -80,9 +80,4 @@ class AuthorService:
         return True
 
 
-class AuthorServiceInjectable(AuthorService):
-    def __init__(self, session_maker: db.SessionMakerDep):
-        super().__init__(session_maker=session_maker)
-
-
-AuthorServiceDep = Annotated[AuthorService, Depends(AuthorServiceInjectable)]
+AuthorServiceDep = Annotated[AuthorService, Depends(AuthorService)]
