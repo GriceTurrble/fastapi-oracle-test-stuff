@@ -89,7 +89,7 @@ def mock_session():
     `get`, `commit`, `refresh`, `delete`, ...) as `AsyncMock`s while sync ones
     (`add`) stay plain `MagicMock`s. `__aenter__` doesn't return `self` by
     default though, so it's wired up explicitly here to match how the service
-    layer actually uses it: `async with self.session_maker() as session:`.
+    layer actually uses it: `async with self.async_session_maker() as session:`.
     """
     session = MagicMock(spec=AsyncSession)
     session.__aenter__.return_value = session

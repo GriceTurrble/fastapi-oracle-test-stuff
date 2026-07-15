@@ -24,9 +24,9 @@ def mock_book_service():
 
 @pytest.fixture
 def client(app, mock_book_service):
-    """A `TestClient` with `BookServiceInjectable` overridden to the mock.
+    """A `TestClient` with `BookService` overridden to the mock.
 
-    `BookServiceInjectable` is the callable actually passed to `Depends()`,
+    `BookService` is the callable actually passed to `Depends()`,
     so overriding it bypasses `SettingsDep`/`AsyncSessionMakerDep` entirely -- no
     settings or DB session is ever constructed for these tests.
     """
